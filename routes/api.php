@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Partner;
+use App\Http\Controllers\PartnerController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,21 +30,23 @@ use App\Models\Partner;
 
 
 // 1. GET /api/partners -- return all partners sorted by id field and paginate the results. The results should contain also the full URL to partner logo.
-Route::get('/partners', function() {
+// 2. GET /api/partners?name=ab&per_page=3&page=2 -- return partners where name starts with prefix "ab".
+Route::get('/partners/{name?}/{per_page?}/{page?}', function() {
 });
 
-// 2. GET /api/partners?name=ab&per_page=3&page=2 -- return partners where name starts with prefix "ab".
-Route::get('/partners', function() {
-     
-});
+/*Route::get('partners/{name?}/{per_page?}/{page?}', [PartnerController::class, 'index']);*/
 
 // 3. GET /api/partners/{id} -- return a single partner with the given id.
-Route::get('/partners/{id}', function() {
-     
-});
-
+/*Route::get('/partners/{id}', function() {
+});*/
+Route::get('partners/{id}', [PartnerController::class, 'show']);
+/*
 // 4. POST /api/partners -- create a new partner, upload a partner logo, crop it to 100x100 pixels and store the filename in the field "photo". Implement a case insensitive rule that the "name" field can't contain the substring "Nexus" or its dashed derivatives (e.g. "N-exus", "nE-x----U-s").
 Route::post('/partners', function() {
+
+    $request->validate([
+        'name' => 'required'
+    ]);
 });
 
 // 5. PATCH /api/partners/{id} -- allow to update the partner info including the logo, the same validation rules apply as before.
@@ -52,6 +56,9 @@ Route::patch('/partners/{id}', function() {
 // 6. DELETE /api/partners/{id} -- delete the partner with the given id.
 Route::delete('/partners/{id}', function() {
 });
+*/
+
+//Route::resource('partners', PartnerController::class);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
