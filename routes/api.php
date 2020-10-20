@@ -31,9 +31,10 @@ use App\Http\Controllers\PartnerController;
 
 // 1. GET /api/partners -- return all partners sorted by id field and paginate the results. The results should contain also the full URL to partner logo.
 // 2. GET /api/partners?name=ab&per_page=3&page=2 -- return partners where name starts with prefix "ab".
-/*Route::get('/partners/{name?}/{per_page?}/{page?}', function() {
-});*/
-Route::get('partners/{name?}/{per_page?}/{page?}', [PartnerController::class, 'index']);
+Route::get('/partners/{name?}/{per_page?}/{page?}', function() {
+});
+
+/*Route::get('partners/{name?}/{per_page?}/{page?}', [PartnerController::class, 'index']);*/
 
 // 3. GET /api/partners/{id} -- return a single partner with the given id.
 /*Route::get('/partners/{id}', function() {

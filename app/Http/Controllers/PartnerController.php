@@ -14,7 +14,7 @@ class PartnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($Input)
     {
         /*$partners = Partner::cursor()->filter(function($partner) {
             return $partner->name.star
@@ -22,7 +22,11 @@ class PartnerController extends Controller
         $name = $Input::get('name');
         $per_page = $Input::get('per_page');
         $page = $Input::get('page');
+        
+        dd();
+        echo $name;
 
+        
         // pagination will be at that range
         if( isset($per_page) && isset($page) ){
             // if partner name set
