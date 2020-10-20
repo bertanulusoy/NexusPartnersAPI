@@ -14,7 +14,7 @@ class CreatePartnersTable extends Migration
     public function up()
     {
         Schema::create('partners', function (Blueprint $table) {
-            $table->id(10)->unsigned()->nullable(false);
+            $table->id()->length(10)->unsigned()->nullable(false);
             $table->string('name', 100)->nullable(false);
             $table->string('photo', 100)->nullable($value = true);
             $table->timestamp('created_at')->nullable(false)->default(DB::raw('CURRENT_TIMESTAMP'));
