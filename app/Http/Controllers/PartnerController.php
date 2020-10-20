@@ -18,44 +18,32 @@ class PartnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($name=null, $per_page=null, $page=null)
+    public function index(Request $request)
     {
-        /*$partners = Partner::cursor()->filter(function($partner) {
-            return $partner->name.star
-        });*/
-        /*$name = $Input::get('name');
-        $per_page = $Input::get('per_page');
-        $page = $Input::get('page');*/
-        echo $name;
-         
-        // pagination will be at that range
-        if( isset($per_page) && isset($page) ){
+        if(isset($request->per_page) && isset($request->page)) {
             // if partner name set
-            if(isset($name)) {
+            if(isset($request->name)) {
                 $result = Partner::orderBy('id', 'asc')
-                    ->where('name', 'like', name.'%')
-                    ->take($page)
-                    ->paginate($per_page)
-                    ->get();
+                    ->where('name', 'like', $request->name.'%')
+                    ->take($request->page)
+                    ->paginate($request->per_page);
             } else { // otherwise just do pagination
                 $result = Partner::orderBy('id', 'asc')
-                    ->take($page)
-                    ->paginate($per_page)
-                    ->get();
+                    ->take($request->page)
+                    ->paginate($request->per_page);
             }
         } else {
             // if per_page and page are not set, take default
             $result = Partner::orderBy('id', 'asc')->paginate(10);
-            // if partner name set, do it with deafult paginate number
-            if(isset($name)) {
+            if(isset($request->name)) {
                 $result = Partner::orderBy('id', 'asc')
-                ->where('name', 'like', name.'%')
-                ->paginate(10)
-                ->get();
+                    ->where('name', 'like', $request->name.'%')
+                    ->paginate(10);
             }
         }
         return $result;
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -65,9 +53,11 @@ class PartnerController extends Controller
      */
     public function store(Request $request)
     {
+        //"name" field can't contain the substring "Nexus" or its dashed derivatives
         if (preg_match("/n\-*e\-*x\-*u\-*s/i", $request->name)){
             return "You cannot use 'Nexus' word and its derivative names for your partner name!";
         } else {
+            // if photo uploaded
             if($request->has('photo')) {
                 // store partner logo image in public/images folder
                 $path = $request->photo->store('public/images');
@@ -83,6 +73,8 @@ class PartnerController extends Controller
                 // delete old saved image file.
                 Storage::delete($path);
             }
+
+            // insert new partner into the database
             $partner = new Partner;
             $partner->name = $request->name;
             $partner->photo = 'public/'.$request->name.'.png';
@@ -98,6 +90,7 @@ class PartnerController extends Controller
      */
     public function show($id)
     {
+        // find partner by id
         return Partner::find($id);
     }
 
@@ -110,12 +103,15 @@ class PartnerController extends Controller
      */
     public function update(Request $request, $id)
     {   
+        //"name" field can't contain the substring "Nexus" or its dashed derivatives
         if (preg_match("/n\-*e\-*x\-*u\-*s/i", $request->name)){
             return "You cannot use 'Nexus' word and its derivative names for your partner name!";
         } else {
-            // get partner object
+
+            // get partner by id
             $partner = Partner::find($id);
 
+            // if photo uploaded
             if($request->has('photo')) {
                 // delete old partner logo from filesystem
                 \File::delete(basename($partner->photo));
@@ -135,6 +131,7 @@ class PartnerController extends Controller
                 Storage::delete($new_logo_path);
             }
 
+            // update partner info in the database
             $partner->name = $request->name;
             $partner->photo = 'public/'.$request->name.'.png';
             $partner->save();
@@ -149,6 +146,7 @@ class PartnerController extends Controller
      */
     public function destroy($id)
     {
+        // delete partner by id
         $partner = Partner::find($id);
         $partner->delete();
     }
