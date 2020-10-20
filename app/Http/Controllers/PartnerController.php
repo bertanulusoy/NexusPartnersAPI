@@ -23,10 +23,6 @@ class PartnerController extends Controller
         $per_page = $Input::get('per_page');
         $page = $Input::get('page');
         
-        dd();
-        echo $name;
-
-        
         // pagination will be at that range
         if( isset($per_page) && isset($page) ){
             // if partner name set
